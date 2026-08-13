@@ -76,11 +76,24 @@ td select{width:100%;padding:10px;border:1px solid #cfcfca;border-radius:10px;ba
 .route-row input{width:100%}
 .notice{background:#fff7d0;border:1px solid #efd671;border-radius:12px;padding:10px 12px;font-size:13px;margin:9px 0}
 .history-card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px}
+.absent-tab-count{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;margin-left:4px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:900}
+.absent-page{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.absent-column{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.absent-column .head{display:flex;justify-content:space-between;align-items:center;padding:14px 15px;font-weight:900;font-size:18px}
+.absent-column.ferie .head{background:#fff3bd;border-bottom:3px solid var(--yellow)}
+.absent-column.malattia .head{background:#fde7e8;border-bottom:3px solid var(--red)}
+.absent-big-count{display:grid;place-items:center;min-width:32px;height:32px;padding:0 8px;border-radius:999px;background:#fff;font-size:14px;font-weight:900}
+.absent-list{padding:8px 12px 12px}
+.absent-person{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--line)}
+.absent-person:last-child{border-bottom:0}
+.absent-person-name{font-weight:850;font-size:16px}
+.absent-empty{padding:18px 4px;color:var(--muted);font-size:13px}
+
 @media(max-width:820px){
   .app{padding:0 9px 70px}.top{margin:0 -9px 10px}.top h1{font-size:23px}
   .summary{grid-template-columns:repeat(2,1fr)}.absence-overview{grid-template-columns:1fr}.sum{padding:10px}.sum b{font-size:22px}.sum span{font-size:10px}
   .driver-cards{display:grid}.drivers-table{display:none}.controls{grid-template-columns:1fr 1fr}.controls .status{grid-column:1/-1}
-  .grid{grid-template-columns:1fr}.form{grid-template-columns:1fr}.full{grid-column:auto}.route-row{grid-template-columns:1fr 1fr auto}
+  .grid{grid-template-columns:1fr}.absent-page{grid-template-columns:1fr}.form{grid-template-columns:1fr}.full{grid-column:auto}.route-row{grid-template-columns:1fr 1fr auto}
 }
 </style>
 </head>
@@ -107,10 +120,10 @@ td select{width:100%;padding:10px;border:1px solid #cfcfca;border-radius:10px;ba
   </div>
 
   <div id="dayBanner"></div>
-  <div id="absenceOverview" class="absence-overview"></div>
 
   <div class="tabs">
     <button class="tab active" data-tab="oggi">Oggi</button>
+    <button class="tab" data-tab="assenti">Assenti <span id="absentTabCount" class="absent-tab-count">0</span></button>
     <button class="tab" data-tab="mezzi">Mezzi</button>
     <button class="tab" data-tab="storico">Storico</button>
   </div>
@@ -127,6 +140,21 @@ td select{width:100%;padding:10px;border:1px solid #cfcfca;border-radius:10px;ba
         <thead><tr><th>Dipendente</th><th>Stato</th><th>Giro</th><th>Mezzo</th><th>Situazione</th><th></th></tr></thead>
         <tbody id="driversBody"></tbody>
       </table>
+    </div>
+  </section>
+
+
+  <section class="panel" id="assenti">
+    <div class="notice"><b>Assenti oggi</b><br>Qui trovi subito chi è in ferie o in malattia.</div>
+    <div class="absent-page">
+      <div class="absent-column ferie">
+        <div class="head"><span>🏖️ Ferie</span><span id="ferieCount" class="absent-big-count">0</span></div>
+        <div id="ferieList" class="absent-list"></div>
+      </div>
+      <div class="absent-column malattia">
+        <div class="head"><span>🤒 Malattia</span><span id="malattiaCount" class="absent-big-count">0</span></div>
+        <div id="malattiaList" class="absent-list"></div>
+      </div>
     </div>
   </section>
 
@@ -276,19 +304,28 @@ function vehicleOptions(current,id){
 function renderAbsences(){
   const ferie=state.drivers.filter(d=>d.status==='Ferie');
   const malattia=state.drivers.filter(d=>d.status==='Malattia');
-  const chips=list=>list.length
-    ? list.map(d=>`<span class="person-chip">${esc(d.name)}</span>`).join('')
-    : '<span class="no-absence">Nessuno</span>';
-  document.getElementById('absenceOverview').innerHTML=`
-    <div class="absence-box ferie">
-      <div class="absence-title"><span>🏖️ Ferie</span><span class="absence-count">${ferie.length}</span></div>
-      <div class="absence-names">${chips(ferie)}</div>
-    </div>
-    <div class="absence-box malattia">
-      <div class="absence-title"><span>🤒 Malattia</span><span class="absence-count">${malattia.length}</span></div>
-      <div class="absence-names">${chips(malattia)}</div>
-    </div>`;
+  const totale=ferie.length+malattia.length;
+
+  const tabCount=document.getElementById('absentTabCount');
+  const ferieCount=document.getElementById('ferieCount');
+  const malattiaCount=document.getElementById('malattiaCount');
+  if(tabCount) tabCount.textContent=totale;
+  if(ferieCount) ferieCount.textContent=ferie.length;
+  if(malattiaCount) malattiaCount.textContent=malattia.length;
+
+  const renderList=list=>list.length
+    ? list.map(d=>`<div class="absent-person">
+        <div><div class="absent-person-name">${esc(d.name)}</div><div class="small">${esc(d.note||'')}</div></div>
+        <button class="btn light return-driver" data-id="${d.id}">Rientra</button>
+      </div>`).join('')
+    : '<div class="absent-empty">Nessuno</div>';
+
+  const ferieList=document.getElementById('ferieList');
+  const malattiaList=document.getElementById('malattiaList');
+  if(ferieList) ferieList.innerHTML=renderList(ferie);
+  if(malattiaList) malattiaList.innerHTML=renderList(malattia);
 }
+
 function summary(){
   document.getElementById('availableDrivers').textContent=state.drivers.filter(d=>d.status==='Disponibile').length;
   document.getElementById('openRoutes').textContent=uncovered().length;
@@ -512,6 +549,7 @@ document.body.addEventListener('click',e=>{
 
   t=e.target.closest('.edit-driver');if(t)openDriver(Number(t.dataset.id));
   t=e.target.closest('.edit-vehicle');if(t)openVehicle(Number(t.dataset.id));
+  t=e.target.closest('.return-driver');if(t){const d=state.drivers.find(x=>x.id===Number(t.dataset.id));if(d){d.status='Disponibile';render();}}
 
   t=e.target.closest('.problem-vehicle');if(t){
     const v=state.vehicles.find(x=>x.id===Number(t.dataset.id));
