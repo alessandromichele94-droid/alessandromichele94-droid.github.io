@@ -4,104 +4,77 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#111827">
 <title>Lavagna Logistica</title>
 <style>
-:root{
-  --bg:#f3f4f6;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;
-  --green:#dcfce7;--greenText:#166534;--yellow:#fef3c7;--yellowText:#92400e;
-  --red:#fee2e2;--redText:#991b1b;--blue:#dbeafe;--blueText:#1d4ed8;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-button,input,select{font:inherit}
-.app{max-width:1180px;margin:0 auto;padding:14px 14px 80px}
-.topbar{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin:4px 0 14px}
-h1{font-size:28px;margin:0}.subtitle{color:var(--muted);font-size:14px;margin-top:3px}
-.btn{border:0;border-radius:12px;padding:11px 14px;font-weight:700;cursor:pointer}
-.btn.primary{background:#111827;color:#fff}.btn.light{background:#fff;border:1px solid var(--line);color:#111827}
-.btn.danger{background:#fff;border:1px solid #fecaca;color:#b91c1c}
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:12px 0 16px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px}
-.stat .n{font-size:28px;font-weight:800;line-height:1}.stat .l{font-size:12px;color:var(--muted);margin-top:5px}
-.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:12px}
-.tab{white-space:nowrap;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 13px;font-weight:700;cursor:pointer}
-.tab.active{background:#111827;color:white;border-color:#111827}
-.panel{display:none}.panel.active{display:block}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
-.search{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
-.table-wrap{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:900px}
-th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
-th{font-size:12px;color:#4b5563;background:#f9fafb;position:sticky;top:0;z-index:1}
-td input,td select,.field{width:100%;padding:9px 10px;border:1px solid #d1d5db;border-radius:10px;background:#fff}
-.badge{display:inline-block;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:800}
-.ok{background:var(--green);color:var(--greenText)}.warn{background:var(--yellow);color:var(--yellowText)}
-.bad{background:var(--red);color:var(--redText)}.info{background:var(--blue);color:var(--blueText)}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.vehicle{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px}
-.vehicle h3{margin:0 0 4px;font-size:18px}.small{font-size:12px;color:var(--muted)}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0 8px}
-.section-title h2{margin:0;font-size:20px}
-.alerts{display:grid;gap:8px}
-.alert-card{background:#fff;border:1px solid var(--line);border-left:5px solid #f59e0b;border-radius:12px;padding:12px}
-.alert-card.red{border-left-color:#ef4444}.alert-card.green{border-left-color:#22c55e}
-.modal-bg{position:fixed;inset:0;background:rgba(17,24,39,.42);display:none;align-items:flex-end;justify-content:center;z-index:20}
-.modal-bg.show{display:flex}.modal{width:100%;max-width:620px;background:white;border-radius:20px 20px 0 0;padding:18px;max-height:88vh;overflow:auto}
-.modal h3{margin:0 0 12px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.form-grid .full{grid-column:1/-1}
-.label{font-size:12px;color:#4b5563;margin:0 0 4px}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
-.note{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:12px}
-.footer-note{font-size:12px;color:var(--muted);margin-top:10px}
-@media(max-width:800px){
-  .app{padding:12px 10px 70px}.topbar{align-items:center}h1{font-size:24px}
-  .stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}
-  .row{grid-template-columns:1fr}.desktop-hide{display:none}
-}
+:root{--bg:#f3f4f6;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--green:#dcfce7;--greenT:#166534;--yellow:#fef3c7;--yellowT:#92400e;--red:#fee2e2;--redT:#991b1b;--blue:#dbeafe;--blueT:#1d4ed8}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}button,input,select,textarea{font:inherit}
+.app{max-width:1220px;margin:auto;padding:12px 12px 80px}.top{display:flex;justify-content:space-between;gap:10px;align-items:center}.top h1{margin:0;font-size:26px}.sub{font-size:13px;color:var(--muted)}
+.btn{border:0;border-radius:12px;padding:10px 13px;font-weight:800;cursor:pointer}.primary{background:#111827;color:#fff}.light{background:#fff;color:#111827;border:1px solid var(--line)}.danger{background:#fff;color:#b91c1c;border:1px solid #fecaca}
+.datebar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}.datebar input{background:#fff;border:1px solid var(--line);border-radius:11px;padding:9px 11px}
+.stats{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:10px 0 14px}.stat{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px}.stat b{display:block;font-size:24px}.stat span{font-size:11px;color:var(--muted)}
+.tabs{display:flex;gap:7px;overflow:auto;padding-bottom:5px;margin-bottom:10px}.tab{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:9px 13px;font-weight:800}.tab.active{background:#111827;color:#fff}
+.panel{display:none}.panel.active{display:block}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:9px 0}.search,.field{background:#fff;border:1px solid #d1d5db;border-radius:10px;padding:9px 10px}.search{flex:1;min-width:200px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}.pad{padding:14px}.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0 8px}.section-title h2{margin:0;font-size:20px}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:930px}th,td{padding:9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}th{font-size:12px;color:#4b5563;background:#f9fafb;position:sticky;top:0}td select,td input{width:100%;padding:8px;border:1px solid #d1d5db;border-radius:9px;background:#fff}
+.badge{display:inline-block;border-radius:999px;padding:5px 8px;font-size:12px;font-weight:800}.ok{background:var(--green);color:var(--greenT)}.warn{background:var(--yellow);color:var(--yellowT)}.bad{background:var(--red);color:var(--redT)}.info{background:var(--blue);color:var(--blueT)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.route,.vehicle,.history-card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px}.route h3,.vehicle h3{margin:0 0 3px}.small{font-size:12px;color:var(--muted)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.alerts{display:grid;gap:8px;margin-bottom:12px}.alert{background:#fff;border:1px solid var(--line);border-left:5px solid #f59e0b;border-radius:12px;padding:11px}.alert.red{border-left-color:#ef4444}.alert.green{border-left-color:#22c55e}
+.quick{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:7px;margin-top:9px}.quick select{min-width:0}
+.modal-bg{position:fixed;inset:0;background:rgba(17,24,39,.45);display:none;align-items:flex-end;justify-content:center;z-index:20}.modal-bg.show{display:flex}.modal{width:100%;max-width:640px;background:#fff;border-radius:20px 20px 0 0;padding:17px;max-height:90vh;overflow:auto}.modal h3{margin:0 0 12px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:9px}.full{grid-column:1/-1}.label{font-size:12px;color:#4b5563;margin-bottom:4px}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.notice{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;border-radius:12px;padding:10px 12px;font-size:13px;margin:9px 0}.history-table{overflow:auto}
+@media(max-width:820px){.app{padding:10px 9px 70px}.top h1{font-size:23px}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.form{grid-template-columns:1fr}.full{grid-column:auto}.row{grid-template-columns:1fr}.quick{grid-template-columns:1fr 1fr}.quick .assign{grid-column:1/-1}.desktop-only{display:none}}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="topbar">
-    <div>
-      <h1>Lavagna Logistica</h1>
-      <div class="subtitle">Dipendenti · giri · mezzi · anomalie</div>
-    </div>
-    <button class="btn primary" id="quickAdd">+ Aggiungi</button>
+  <div class="top">
+    <div><h1>Lavagna Logistica</h1><div class="sub">Persone ↔ Giri ↔ Mezzi</div></div>
+    <button class="btn primary" id="quickAdd">+ Dipendente</button>
   </div>
 
-  <div class="note">Questa versione salva i dati sul dispositivo quando il browser lo consente. Puoi anche esportare un backup JSON.</div>
+  <div class="datebar">
+    <b>Giornata:</b><input type="date" id="workDate">
+    <button class="btn light" id="saveDayBtn">Salva giornata</button>
+    <button class="btn primary" id="closeDayBtn">Chiudi e crea domani</button>
+  </div>
 
   <div class="stats">
-    <div class="stat"><div class="n" id="sPresenti">0</div><div class="l">Presenti</div></div>
-    <div class="stat"><div class="n" id="sAssenti">0</div><div class="l">Assenti</div></div>
-    <div class="stat"><div class="n" id="sJolly">0</div><div class="l">Jolly</div></div>
-    <div class="stat"><div class="n" id="sMezzi">0</div><div class="l">Mezzi disponibili</div></div>
-    <div class="stat"><div class="n" id="sAlert">0</div><div class="l">Alert aperti</div></div>
+    <div class="stat"><b id="sPresenti">0</b><span>Presenti</span></div>
+    <div class="stat"><b id="sAssenti">0</b><span>Assenti</span></div>
+    <div class="stat"><b id="sJolly">0</b><span>Jolly liberi</span></div>
+    <div class="stat"><b id="sCovered">0</b><span>Giri coperti</span></div>
+    <div class="stat"><b id="sOpen">0</b><span>Giri scoperti</span></div>
+    <div class="stat"><b id="sVehicles">0</b><span>Mezzi disponibili</span></div>
+    <div class="stat"><b id="sAlerts">0</b><span>Alert</span></div>
   </div>
 
   <div class="tabs">
-    <button class="tab active" data-tab="lavagna">Lavagna</button>
+    <button class="tab active" data-tab="oggi">Oggi</button>
+    <button class="tab" data-tab="giri">Giri</button>
     <button class="tab" data-tab="mezzi">Mezzi</button>
-    <button class="tab" data-tab="alert">Alert</button>
+    <button class="tab" data-tab="storico">Storico</button>
     <button class="tab" data-tab="backup">Backup</button>
   </div>
 
-  <section class="panel active" id="lavagna">
+  <section class="panel active" id="oggi">
+    <div id="topAlerts" class="alerts"></div>
     <div class="toolbar">
-      <input class="search" id="searchDriver" placeholder="Cerca dipendente, giro o mezzo…">
+      <input class="search" id="searchDriver" placeholder="Cerca dipendente, giro, mezzo…">
       <button class="btn light" id="addDriverBtn">+ Dipendente</button>
     </div>
     <div class="card table-wrap">
       <table>
-        <thead><tr>
-          <th>Dipendente</th><th>Stato</th><th>Giro</th><th>Mezzo</th><th>Note</th><th>Alert</th><th></th>
-        </tr></thead>
+        <thead><tr><th>Dipendente</th><th>Stato</th><th>Giro</th><th>Mezzo</th><th>Note</th><th>Situazione</th><th></th></tr></thead>
         <tbody id="driversBody"></tbody>
       </table>
     </div>
+  </section>
+
+  <section class="panel" id="giri">
+    <div class="section-title"><h2>Giri attivi</h2><button class="btn light" id="addRouteBtn">+ Giro</button></div>
+    <div class="grid" id="routesGrid"></div>
   </section>
 
   <section class="panel" id="mezzi">
@@ -109,306 +82,281 @@ td input,td select,.field{width:100%;padding:9px 10px;border:1px solid #d1d5db;b
     <div class="grid" id="vehiclesGrid"></div>
   </section>
 
-  <section class="panel" id="alert">
-    <div class="section-title"><h2>Problemi da risolvere</h2></div>
-    <div class="alerts" id="alertsList"></div>
+  <section class="panel" id="storico">
+    <div class="section-title"><h2>Storico giornate</h2></div>
+    <div class="toolbar"><select class="field" id="historySelect"></select><button class="btn light" id="loadHistoryBtn">Visualizza</button></div>
+    <div id="historyView"></div>
   </section>
 
   <section class="panel" id="backup">
-    <div class="card" style="padding:14px">
-      <h2 style="margin-top:0">Backup dati</h2>
-      <p class="small">Esporta un file con tutti i dipendenti e i mezzi. Puoi reimportarlo in questa app.</p>
+    <div class="card pad">
+      <h2 style="margin-top:0">Backup</h2>
+      <div class="notice">I dati di questa versione sono salvati sul dispositivo/browser. Per più responsabili contemporaneamente servirà un database online.</div>
       <div class="toolbar">
         <button class="btn primary" id="exportBtn">Esporta backup</button>
-        <label class="btn light" style="display:inline-block;cursor:pointer">
-          Importa backup
-          <input type="file" id="importFile" accept=".json,application/json" style="display:none">
-        </label>
+        <label class="btn light">Importa backup<input type="file" id="importFile" accept=".json,application/json" style="display:none"></label>
         <button class="btn danger" id="resetBtn">Ripristina demo</button>
       </div>
-      <div class="footer-note" id="storageInfo"></div>
+      <div class="small" id="storageInfo"></div>
     </div>
   </section>
 </div>
 
-<div class="modal-bg" id="driverModal">
-  <div class="modal">
-    <h3 id="driverModalTitle">Nuovo dipendente</h3>
-    <div class="form-grid">
-      <div class="full"><div class="label">Nome</div><input class="field" id="dName"></div>
-      <div><div class="label">Stato</div><select class="field" id="dStatus"></select></div>
-      <div><div class="label">Giro</div><input class="field" id="dRoute" placeholder="es. G12"></div>
-      <div><div class="label">Mezzo</div><select class="field" id="dVehicle"></select></div>
-      <div><div class="label">Telefono</div><input class="field" id="dPhone" placeholder="facoltativo"></div>
-      <div class="full"><div class="label">Note</div><input class="field" id="dNote"></div>
-    </div>
-    <div class="actions">
-      <button class="btn light" data-close="driverModal">Annulla</button>
-      <button class="btn primary" id="saveDriver">Salva</button>
-    </div>
+<div class="modal-bg" id="driverModal"><div class="modal">
+  <h3 id="driverTitle">Dipendente</h3>
+  <div class="form">
+    <div class="full"><div class="label">Nome</div><input class="field" id="dName"></div>
+    <div><div class="label">Stato</div><select class="field" id="dStatus"></select></div>
+    <div><div class="label">Giro</div><select class="field" id="dRoute"></select></div>
+    <div><div class="label">Mezzo</div><select class="field" id="dVehicle"></select></div>
+    <div><div class="label">Telefono</div><input class="field" id="dPhone"></div>
+    <div class="full"><div class="label">Note</div><input class="field" id="dNote"></div>
   </div>
-</div>
+  <div class="actions"><button class="btn light" data-close="driverModal">Annulla</button><button class="btn primary" id="saveDriver">Salva</button></div>
+</div></div>
 
-<div class="modal-bg" id="vehicleModal">
-  <div class="modal">
-    <h3 id="vehicleModalTitle">Nuovo mezzo</h3>
-    <div class="form-grid">
-      <div><div class="label">Codice mezzo</div><input class="field" id="vCode" placeholder="es. F18"></div>
-      <div><div class="label">Targa</div><input class="field" id="vPlate"></div>
-      <div><div class="label">Modello</div><input class="field" id="vModel"></div>
-      <div><div class="label">Stato</div><select class="field" id="vStatus"></select></div>
-      <div><div class="label">Km</div><input class="field" id="vKm" type="number" min="0"></div>
-      <div><div class="label">Tagliando a km</div><input class="field" id="vService" type="number" min="0"></div>
-      <div class="full"><div class="label">Note</div><input class="field" id="vNote"></div>
-    </div>
-    <div class="actions">
-      <button class="btn light" data-close="vehicleModal">Annulla</button>
-      <button class="btn primary" id="saveVehicle">Salva</button>
-    </div>
+<div class="modal-bg" id="vehicleModal"><div class="modal">
+  <h3 id="vehicleTitle">Mezzo</h3>
+  <div class="form">
+    <div><div class="label">Codice</div><input class="field" id="vCode"></div>
+    <div><div class="label">Targa</div><input class="field" id="vPlate"></div>
+    <div><div class="label">Modello</div><input class="field" id="vModel"></div>
+    <div><div class="label">Stato</div><select class="field" id="vStatus"></select></div>
+    <div><div class="label">Km</div><input class="field" id="vKm" type="number"></div>
+    <div><div class="label">Tagliando a km</div><input class="field" id="vService" type="number"></div>
+    <div class="full"><div class="label">Problema / note</div><input class="field" id="vNote"></div>
   </div>
-</div>
+  <div class="actions"><button class="btn light" data-close="vehicleModal">Annulla</button><button class="btn primary" id="saveVehicle">Salva</button></div>
+</div></div>
+
+<div class="modal-bg" id="routeModal"><div class="modal">
+  <h3 id="routeTitle">Giro</h3>
+  <div class="form">
+    <div><div class="label">Codice giro</div><input class="field" id="rCode" placeholder="G12"></div>
+    <div><div class="label">Zona</div><input class="field" id="rZone" placeholder="Crema / Soncino…"></div>
+    <div><div class="label">Stato</div><select class="field" id="rActive"><option value="true">Attivo</option><option value="false">Non attivo</option></select></div>
+    <div><div class="label">Priorità</div><select class="field" id="rPriority"><option>Normale</option><option>Alta</option><option>Urgente</option></select></div>
+    <div class="full"><div class="label">Note</div><input class="field" id="rNote"></div>
+  </div>
+  <div class="actions"><button class="btn light" data-close="routeModal">Annulla</button><button class="btn primary" id="saveRoute">Salva</button></div>
+</div></div>
 
 <script>
 (function(){
-  'use strict';
-
-  const STATUS = ['Presente','Jolly','Ferie','Malattia','Riposo'];
-  const VEH_STATUS = ['Disponibile','Problema','Officina'];
-
-  const demo = {
-    drivers:[
-      {id:1,name:'Alessandro',status:'Presente',route:'G25',vehicle:'F03',phone:'',note:''},
-      {id:2,name:'Marco',status:'Malattia',route:'G12',vehicle:'',phone:'',note:''},
-      {id:3,name:'Luca',status:'Presente',route:'G31',vehicle:'F07',phone:'',note:'Affiancamento'},
-      {id:4,name:'Andrea',status:'Jolly',route:'',vehicle:'F09',phone:'',note:'Disponibile'}
-    ],
-    vehicles:[
-      {id:101,code:'F03',plate:'CR 123XX',model:'Ducato',status:'Disponibile',km:85430,service:90000,note:''},
-      {id:102,code:'F07',plate:'CR 456XX',model:'Ducato',status:'Problema',km:112200,service:115000,note:'Spia motore'},
-      {id:103,code:'F09',plate:'CR 789XX',model:'Transit',status:'Disponibile',km:66210,service:70000,note:''},
-      {id:104,code:'F12',plate:'CR 321YY',model:'Sprinter',status:'Officina',km:149100,service:150000,note:'Freni'}
-    ]
-  };
-
-  let state = loadState();
-  let editingDriver = null;
-  let editingVehicle = null;
-
-  function clone(o){ return JSON.parse(JSON.stringify(o)); }
-  function loadState(){
-    try{
-      const raw = localStorage.getItem('lavagna_logistica_v1');
-      return raw ? JSON.parse(raw) : clone(demo);
-    }catch(e){ return clone(demo); }
+'use strict';
+const STATUS=['Presente','Jolly','Ferie','Malattia','Riposo'];
+const VSTATUS=['Disponibile','Problema','Officina'];
+const ACTIVE=['Presente','Jolly'];
+const demo={
+ workDate:new Date().toISOString().slice(0,10),
+ drivers:[
+  {id:1,name:'Alessandro',status:'Presente',route:'G25',vehicle:'F03',phone:'',note:''},
+  {id:2,name:'Marco',status:'Malattia',route:'G12',vehicle:'',phone:'',note:''},
+  {id:3,name:'Luca',status:'Presente',route:'G31',vehicle:'F07',phone:'',note:'Affiancamento'},
+  {id:4,name:'Andrea',status:'Jolly',route:'',vehicle:'F09',phone:'',note:'Disponibile'}
+ ],
+ vehicles:[
+  {id:101,code:'F03',plate:'CR 123XX',model:'Ducato',status:'Disponibile',km:85430,service:90000,note:''},
+  {id:102,code:'F07',plate:'CR 456XX',model:'Ducato',status:'Problema',km:112200,service:115000,note:'Spia motore'},
+  {id:103,code:'F09',plate:'CR 789XX',model:'Transit',status:'Disponibile',km:66210,service:70000,note:''},
+  {id:104,code:'F12',plate:'CR 321YY',model:'Sprinter',status:'Officina',km:149100,service:150000,note:'Freni'}
+ ],
+ routes:[
+  {id:201,code:'G12',zone:'Crema',active:true,priority:'Normale',note:''},
+  {id:202,code:'G25',zone:'Romanengo',active:true,priority:'Normale',note:''},
+  {id:203,code:'G31',zone:'Soncino',active:true,priority:'Alta',note:''},
+  {id:204,code:'G18',zone:'Pandino',active:true,priority:'Normale',note:''}
+ ],
+ history:{}
+};
+let state=loadState(), editDriver=null, editVehicle=null, editRoute=null;
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function migrate(old){
+ const s=clone(demo);
+ if(old&&Array.isArray(old.drivers))s.drivers=old.drivers;
+ if(old&&Array.isArray(old.vehicles))s.vehicles=old.vehicles;
+ const codes=[...new Set(s.drivers.map(d=>d.route).filter(Boolean))];
+ codes.forEach((c,i)=>{if(!s.routes.some(r=>r.code===c))s.routes.push({id:Date.now()+i,code:c,zone:'',active:true,priority:'Normale',note:''})});
+ return s;
+}
+function loadState(){
+ try{
+  const v2=localStorage.getItem('lavagna_logistica_v2');
+  if(v2)return JSON.parse(v2);
+  const v1=localStorage.getItem('lavagna_logistica_v1');
+  return v1?migrate(JSON.parse(v1)):clone(demo);
+ }catch(e){return clone(demo)}
+}
+function save(){try{localStorage.setItem('lavagna_logistica_v2',JSON.stringify(state));document.getElementById('storageInfo').textContent='Salvataggio locale attivo.'}catch(e){document.getElementById('storageInfo').textContent='Salvataggio locale non disponibile.'}}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function routeAssignments(code){
+ return state.drivers.filter(d=>d.route===code&&ACTIVE.includes(d.status));
+}
+function driverIssue(d){
+ if(['Malattia','Ferie','Riposo'].includes(d.status)&&d.route)return {t:'Assente con giro assegnato',l:'bad'};
+ if(d.status==='Presente'&&!d.route)return {t:'Presente senza giro',l:'warn'};
+ if(d.status==='Jolly'&&d.route)return {t:'Jolly impiegato',l:'info'};
+ if(d.route&&routeAssignments(d.route).length>1)return {t:'Giro assegnato a 2 persone',l:'bad'};
+ if(d.vehicle){
+  const v=state.vehicles.find(x=>x.code===d.vehicle);
+  if(!v)return {t:'Mezzo non trovato',l:'bad'};
+  if(v.status!=='Disponibile')return {t:d.vehicle+' · '+v.status,l:'bad'};
+  if(state.drivers.filter(x=>x.id!==d.id&&x.vehicle===d.vehicle&&ACTIVE.includes(x.status)).length)return {t:'Mezzo assegnato a 2 persone',l:'bad'};
+ }
+ return {t:'OK',l:'ok'};
+}
+function alerts(){
+ const a=[];
+ state.routes.filter(r=>r.active).forEach(r=>{
+  const ass=routeAssignments(r.code);
+  if(!ass.length)a.push({title:'Giro '+r.code+' scoperto',detail:r.zone||'Nessun autista attivo',level:'bad'});
+  if(ass.length>1)a.push({title:'Giro '+r.code+' doppio',detail:ass.map(x=>x.name).join(', '),level:'bad'});
+ });
+ state.drivers.forEach(d=>{
+  const x=driverIssue(d);if(x.l==='bad'||x.l==='warn')a.push({title:d.name,detail:x.t,level:x.l});
+ });
+ state.vehicles.forEach(v=>{
+  if(v.status!=='Disponibile')a.push({title:v.code+' · '+v.status,detail:v.note||v.plate,level:v.status==='Officina'?'bad':'warn'});
+  if(v.service&&v.km){
+   const rem=v.service-v.km;
+   if(rem<0)a.push({title:v.code+' · tagliando superato',detail:Math.abs(rem)+' km oltre',level:'bad'});
+   else if(rem<=1000)a.push({title:v.code+' · tagliando vicino',detail:'Mancano '+rem+' km',level:'warn'});
   }
-  function saveState(){
-    try{
-      localStorage.setItem('lavagna_logistica_v1', JSON.stringify(state));
-      document.getElementById('storageInfo').textContent='Salvataggio locale attivo.';
-    }catch(e){
-      document.getElementById('storageInfo').textContent='Salvataggio locale non disponibile in questa modalità. Usa Esporta backup.';
-    }
-  }
-  function esc(s){
-    return String(s ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-  }
-  function driverAlert(d){
-    if(['Malattia','Ferie','Riposo'].includes(d.status) && d.route) return {text:'Giro assegnato a un assente',level:'bad'};
-    if(d.status==='Presente' && !d.route) return {text:'Presente senza giro',level:'warn'};
-    if(d.status==='Jolly' && d.route) return {text:'Jolly già assegnato',level:'warn'};
-    if(d.vehicle){
-      const v = state.vehicles.find(v=>v.code===d.vehicle);
-      if(!v) return {text:'Mezzo non trovato',level:'bad'};
-      if(v.status!=='Disponibile') return {text:d.vehicle+' · '+v.status,level:'bad'};
-      const others = state.drivers.filter(x=>x.id!==d.id && x.vehicle===d.vehicle && ['Presente','Jolly'].includes(x.status));
-      if(others.length) return {text:'Mezzo assegnato a 2 persone',level:'bad'};
-    }
-    if(d.route && ['Presente','Jolly'].includes(d.status)){
-      const same = state.drivers.filter(x=>x.id!==d.id && x.route===d.route && ['Presente','Jolly'].includes(x.status));
-      if(same.length) return {text:'Giro assegnato a 2 persone',level:'bad'};
-    }
-    return {text:'OK',level:'ok'};
-  }
-  function allAlerts(){
-    const list=[];
-    state.drivers.forEach(d=>{
-      const a=driverAlert(d);
-      if(a.level!=='ok') list.push({title:d.name,detail:a.text,level:a.level});
-    });
-    state.vehicles.forEach(v=>{
-      if(v.status!=='Disponibile') list.push({title:v.code+' · '+v.plate,detail:v.status+(v.note?' · '+v.note:''),level:v.status==='Officina'?'bad':'warn'});
-      if(v.service && v.km && v.service-v.km<=1000 && v.service-v.km>=0) list.push({title:v.code+' · tagliando',detail:'Mancano '+(v.service-v.km)+' km',level:'warn'});
-      if(v.service && v.km && v.km>v.service) list.push({title:v.code+' · tagliando',detail:'Superato di '+(v.km-v.service)+' km',level:'bad'});
-    });
-    return list;
-  }
-  function renderStats(){
-    const presenti=state.drivers.filter(d=>d.status==='Presente').length;
-    const assenti=state.drivers.filter(d=>['Malattia','Ferie','Riposo'].includes(d.status)).length;
-    const jolly=state.drivers.filter(d=>d.status==='Jolly').length;
-    const disp=state.vehicles.filter(v=>v.status==='Disponibile').length;
-    document.getElementById('sPresenti').textContent=presenti;
-    document.getElementById('sAssenti').textContent=assenti;
-    document.getElementById('sJolly').textContent=jolly;
-    document.getElementById('sMezzi').textContent=disp;
-    document.getElementById('sAlert').textContent=allAlerts().length;
-  }
-  function renderDrivers(){
-    const q=document.getElementById('searchDriver').value.trim().toLowerCase();
-    const rows=state.drivers.filter(d=>[d.name,d.status,d.route,d.vehicle,d.note].join(' ').toLowerCase().includes(q));
-    const tbody=document.getElementById('driversBody');
-    tbody.innerHTML=rows.map(d=>{
-      const a=driverAlert(d);
-      return `<tr>
-        <td><b>${esc(d.name)}</b></td>
-        <td><span class="badge ${d.status==='Presente'?'ok':d.status==='Jolly'?'warn':'info'}">${esc(d.status)}</span></td>
-        <td>${esc(d.route||'—')}</td>
-        <td>${esc(d.vehicle||'—')}</td>
-        <td>${esc(d.note||'')}</td>
-        <td><span class="badge ${a.level}">${esc(a.text)}</span></td>
-        <td style="white-space:nowrap">
-          <button class="btn light edit-driver" data-id="${d.id}">Modifica</button>
-          <button class="btn danger del-driver" data-id="${d.id}">×</button>
-        </td>
-      </tr>`;
-    }).join('') || `<tr><td colspan="7" class="small">Nessun risultato.</td></tr>`;
-  }
-  function renderVehicles(){
-    document.getElementById('vehiclesGrid').innerHTML=state.vehicles.map(v=>{
-      const cls=v.status==='Disponibile'?'ok':v.status==='Problema'?'warn':'bad';
-      const remain=(v.service&&v.km)?v.service-v.km:null;
-      return `<div class="vehicle">
-        <div style="display:flex;justify-content:space-between;gap:8px">
-          <div><h3>${esc(v.code)}</h3><div class="small">${esc(v.plate)} · ${esc(v.model||'')}</div></div>
-          <span class="badge ${cls}">${esc(v.status)}</span>
-        </div>
-        <div class="row">
-          <div><div class="small">Km</div><b>${Number(v.km||0).toLocaleString('it-IT')}</b></div>
-          <div><div class="small">Prossimo tagliando</div><b>${v.service?Number(v.service).toLocaleString('it-IT'):'—'}</b></div>
-        </div>
-        ${remain!==null?`<div class="small" style="margin-top:8px">${remain>=0?'Mancano '+remain.toLocaleString('it-IT')+' km':'Tagliando superato di '+Math.abs(remain).toLocaleString('it-IT')+' km'}</div>`:''}
-        ${v.note?`<div class="small" style="margin-top:8px">${esc(v.note)}</div>`:''}
-        <div class="toolbar" style="margin-bottom:0">
-          <button class="btn light edit-vehicle" data-id="${v.id}">Modifica</button>
-          <button class="btn danger del-vehicle" data-id="${v.id}">Elimina</button>
-        </div>
-      </div>`;
-    }).join('') || `<div class="small">Nessun mezzo inserito.</div>`;
-  }
-  function renderAlerts(){
-    const a=allAlerts();
-    document.getElementById('alertsList').innerHTML=a.map(x=>`<div class="alert-card ${x.level==='bad'?'red':''}">
-      <b>${esc(x.title)}</b><div class="small" style="margin-top:3px">${esc(x.detail)}</div>
-    </div>`).join('') || `<div class="alert-card green"><b>Nessun problema aperto</b><div class="small">Tutto regolare.</div></div>`;
-  }
-  function render(){
-    renderStats(); renderDrivers(); renderVehicles(); renderAlerts(); saveState();
-  }
-  function fillSelect(el,values,current,empty=false){
-    el.innerHTML=(empty?'<option value="">— Nessuno —</option>':'')+values.map(v=>`<option ${v===current?'selected':''}>${esc(v)}</option>`).join('');
-  }
-  function openDriver(id=null){
-    editingDriver=id;
-    const d=id?state.drivers.find(x=>x.id===id):{name:'',status:'Presente',route:'',vehicle:'',phone:'',note:''};
-    document.getElementById('driverModalTitle').textContent=id?'Modifica dipendente':'Nuovo dipendente';
-    document.getElementById('dName').value=d.name;
-    fillSelect(document.getElementById('dStatus'),STATUS,d.status);
-    document.getElementById('dRoute').value=d.route||'';
-    fillSelect(document.getElementById('dVehicle'),state.vehicles.map(v=>v.code),d.vehicle,true);
-    document.getElementById('dPhone').value=d.phone||'';
-    document.getElementById('dNote').value=d.note||'';
-    document.getElementById('driverModal').classList.add('show');
-  }
-  function openVehicle(id=null){
-    editingVehicle=id;
-    const v=id?state.vehicles.find(x=>x.id===id):{code:'',plate:'',model:'',status:'Disponibile',km:'',service:'',note:''};
-    document.getElementById('vehicleModalTitle').textContent=id?'Modifica mezzo':'Nuovo mezzo';
-    document.getElementById('vCode').value=v.code;
-    document.getElementById('vPlate').value=v.plate;
-    document.getElementById('vModel').value=v.model||'';
-    fillSelect(document.getElementById('vStatus'),VEH_STATUS,v.status);
-    document.getElementById('vKm').value=v.km||'';
-    document.getElementById('vService').value=v.service||'';
-    document.getElementById('vNote').value=v.note||'';
-    document.getElementById('vehicleModal').classList.add('show');
-  }
-
-  document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
-    btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active');
-  }));
-  document.getElementById('quickAdd').addEventListener('click',()=>openDriver());
-  document.getElementById('addDriverBtn').addEventListener('click',()=>openDriver());
-  document.getElementById('addVehicleBtn').addEventListener('click',()=>openVehicle());
-  document.getElementById('searchDriver').addEventListener('input',renderDrivers);
-
-  document.body.addEventListener('click',e=>{
-    const ed=e.target.closest('.edit-driver'); if(ed) openDriver(Number(ed.dataset.id));
-    const dd=e.target.closest('.del-driver'); if(dd && confirm('Eliminare questo dipendente?')){state.drivers=state.drivers.filter(x=>x.id!==Number(dd.dataset.id));render();}
-    const ev=e.target.closest('.edit-vehicle'); if(ev) openVehicle(Number(ev.dataset.id));
-    const dv=e.target.closest('.del-vehicle'); if(dv && confirm('Eliminare questo mezzo?')){state.vehicles=state.vehicles.filter(x=>x.id!==Number(dv.dataset.id));render();}
-    const cl=e.target.closest('[data-close]'); if(cl) document.getElementById(cl.dataset.close).classList.remove('show');
-    if(e.target.classList.contains('modal-bg')) e.target.classList.remove('show');
-  });
-
-  document.getElementById('saveDriver').addEventListener('click',()=>{
-    const name=document.getElementById('dName').value.trim();
-    if(!name){alert('Inserisci il nome.');return;}
-    const obj={
-      id:editingDriver || Date.now(),
-      name, status:document.getElementById('dStatus').value,
-      route:document.getElementById('dRoute').value.trim().toUpperCase(),
-      vehicle:document.getElementById('dVehicle').value,
-      phone:document.getElementById('dPhone').value.trim(),
-      note:document.getElementById('dNote').value.trim()
-    };
-    if(editingDriver){const i=state.drivers.findIndex(x=>x.id===editingDriver);state.drivers[i]=obj;} else state.drivers.push(obj);
-    document.getElementById('driverModal').classList.remove('show'); render();
-  });
-
-  document.getElementById('saveVehicle').addEventListener('click',()=>{
-    const code=document.getElementById('vCode').value.trim().toUpperCase();
-    if(!code){alert('Inserisci il codice mezzo.');return;}
-    const duplicate=state.vehicles.find(x=>x.code===code && x.id!==editingVehicle);
-    if(duplicate){alert('Esiste già un mezzo con questo codice.');return;}
-    const obj={
-      id:editingVehicle || Date.now(),
-      code,plate:document.getElementById('vPlate').value.trim().toUpperCase(),
-      model:document.getElementById('vModel').value.trim(),
-      status:document.getElementById('vStatus').value,
-      km:Number(document.getElementById('vKm').value||0),
-      service:Number(document.getElementById('vService').value||0),
-      note:document.getElementById('vNote').value.trim()
-    };
-    if(editingVehicle){
-      const old=state.vehicles.find(x=>x.id===editingVehicle);
-      const oldCode=old.code;
-      const i=state.vehicles.findIndex(x=>x.id===editingVehicle); state.vehicles[i]=obj;
-      if(oldCode!==code) state.drivers.forEach(d=>{if(d.vehicle===oldCode)d.vehicle=code;});
-    } else state.vehicles.push(obj);
-    document.getElementById('vehicleModal').classList.remove('show'); render();
-  });
-
-  document.getElementById('exportBtn').addEventListener('click',()=>{
-    const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='lavagna-logistica-backup.json';a.click();URL.revokeObjectURL(a.href);
-  });
-  document.getElementById('importFile').addEventListener('change',e=>{
-    const f=e.target.files[0]; if(!f)return;
-    const r=new FileReader(); r.onload=()=>{
-      try{
-        const data=JSON.parse(r.result);
-        if(!Array.isArray(data.drivers)||!Array.isArray(data.vehicles)) throw new Error();
-        state=data;render();alert('Backup importato.');
-      }catch(err){alert('File di backup non valido.');}
-    }; r.readAsText(f); e.target.value='';
-  });
-  document.getElementById('resetBtn').addEventListener('click',()=>{
-    if(confirm('Ripristinare i dati demo?')){state=clone(demo);render();}
-  });
-
-  render();
+ });
+ return a;
+}
+function stats(){
+ const actRoutes=state.routes.filter(r=>r.active);
+ const covered=actRoutes.filter(r=>routeAssignments(r.code).length===1).length;
+ const open=actRoutes.filter(r=>routeAssignments(r.code).length===0).length;
+ return {
+  presenti:state.drivers.filter(d=>d.status==='Presente').length,
+  assenti:state.drivers.filter(d=>['Malattia','Ferie','Riposo'].includes(d.status)).length,
+  jolly:state.drivers.filter(d=>d.status==='Jolly'&&!d.route).length,
+  covered,open,
+  vehicles:state.vehicles.filter(v=>v.status==='Disponibile').length,
+  alerts:alerts().length
+ };
+}
+function option(values,current,empty){
+ return (empty?'<option value="">—</option>':'')+values.map(v=>`<option value="${esc(v)}" ${v===current?'selected':''}>${esc(v)}</option>`).join('');
+}
+function renderStats(){
+ const s=stats();
+ [['sPresenti',s.presenti],['sAssenti',s.assenti],['sJolly',s.jolly],['sCovered',s.covered],['sOpen',s.open],['sVehicles',s.vehicles],['sAlerts',s.alerts]].forEach(x=>document.getElementById(x[0]).textContent=x[1]);
+ document.getElementById('workDate').value=state.workDate;
+}
+function renderAlerts(){
+ const a=alerts();
+ document.getElementById('topAlerts').innerHTML=a.slice(0,6).map(x=>`<div class="alert ${x.level==='bad'?'red':''}"><b>${esc(x.title)}</b><div class="small">${esc(x.detail)}</div></div>`).join('')||'<div class="alert green"><b>Nessun problema aperto</b></div>';
+}
+function inlineChange(id,key,val){const d=state.drivers.find(x=>x.id===id);if(!d)return;d[key]=val;render()}
+window.inlineChange=inlineChange;
+function renderDrivers(){
+ const q=document.getElementById('searchDriver').value.toLowerCase().trim();
+ const rows=state.drivers.filter(d=>[d.name,d.status,d.route,d.vehicle,d.note].join(' ').toLowerCase().includes(q));
+ const rc=state.routes.filter(r=>r.active).map(r=>r.code);
+ const vc=state.vehicles.map(v=>v.code);
+ document.getElementById('driversBody').innerHTML=rows.map(d=>{
+  const x=driverIssue(d);
+  return `<tr>
+   <td><b>${esc(d.name)}</b></td>
+   <td><select onchange="inlineChange(${d.id},'status',this.value)">${option(STATUS,d.status,false)}</select></td>
+   <td><select onchange="inlineChange(${d.id},'route',this.value)">${option(rc,d.route,true)}</select></td>
+   <td><select onchange="inlineChange(${d.id},'vehicle',this.value)">${option(vc,d.vehicle,true)}</select></td>
+   <td><input value="${esc(d.note||'')}" onchange="inlineChange(${d.id},'note',this.value)"></td>
+   <td><span class="badge ${x.l}">${esc(x.t)}</span></td>
+   <td style="white-space:nowrap"><button class="btn light edit-driver" data-id="${d.id}">Dettagli</button><button class="btn danger del-driver" data-id="${d.id}">×</button></td>
+  </tr>`;
+ }).join('')||'<tr><td colspan="7">Nessun risultato.</td></tr>';
+}
+function renderRoutes(){
+ const activeDrivers=state.drivers.filter(d=>ACTIVE.includes(d.status));
+ const availableVehicles=state.vehicles;
+ document.getElementById('routesGrid').innerHTML=state.routes.map(r=>{
+  const ass=routeAssignments(r.code);
+  const level=!r.active?'info':ass.length===1?'ok':ass.length===0?'bad':'bad';
+  const status=!r.active?'Non attivo':ass.length===1?'Coperto':ass.length===0?'SCOPERTO':'DOPPIO';
+  const selectedDriver=ass[0]?.id||'';
+  const selectedVehicle=ass[0]?.vehicle||'';
+  return `<div class="route">
+    <div style="display:flex;justify-content:space-between;gap:8px"><div><h3>${esc(r.code)}</h3><div class="small">${esc(r.zone||'Zona non indicata')} · ${esc(r.priority)}</div></div><span class="badge ${level}">${status}</span></div>
+    <div class="small" style="margin-top:7px">${ass.length?ass.map(d=>esc(d.name)+(d.vehicle?' · '+esc(d.vehicle):'')).join('<br>'):'Nessun autista assegnato'}</div>
+    ${r.active?`<div class="quick">
+      <select class="field route-driver" data-route="${esc(r.code)}"><option value="">Autista…</option>${activeDrivers.map(d=>`<option value="${d.id}" ${d.id==selectedDriver?'selected':''}>${esc(d.name)}${d.status==='Jolly'?' · JOLLY':''}</option>`).join('')}</select>
+      <select class="field route-vehicle" data-route="${esc(r.code)}"><option value="">Mezzo…</option>${availableVehicles.map(v=>`<option value="${esc(v.code)}" ${v.code===selectedVehicle?'selected':''}>${esc(v.code)} · ${esc(v.status)}</option>`).join('')}</select>
+      <button class="btn primary assign assign-route" data-code="${esc(r.code)}">Assegna</button>
+    </div>`:''}
+    <div class="toolbar"><button class="btn light edit-route" data-id="${r.id}">Modifica</button><button class="btn danger del-route" data-id="${r.id}">Elimina</button></div>
+  </div>`;
+ }).join('')||'<div class="small">Nessun giro inserito.</div>';
+}
+function renderVehicles(){
+ document.getElementById('vehiclesGrid').innerHTML=state.vehicles.map(v=>{
+  const assigned=state.drivers.filter(d=>d.vehicle===v.code&&ACTIVE.includes(d.status));
+  const cls=v.status==='Disponibile'?'ok':v.status==='Problema'?'warn':'bad';
+  const rem=v.service&&v.km?v.service-v.km:null;
+  return `<div class="vehicle">
+   <div style="display:flex;justify-content:space-between;gap:8px"><div><h3>${esc(v.code)}</h3><div class="small">${esc(v.plate)} · ${esc(v.model||'')}</div></div><span class="badge ${cls}">${esc(v.status)}</span></div>
+   <div class="row"><div><div class="small">Km</div><b>${Number(v.km||0).toLocaleString('it-IT')}</b></div><div><div class="small">Assegnato oggi</div><b>${assigned.length?assigned.map(d=>esc(d.name)).join(', '):'—'}</b></div></div>
+   ${rem!==null?`<div class="small" style="margin-top:7px">${rem>=0?'Tagliando tra '+rem.toLocaleString('it-IT')+' km':'Tagliando superato di '+Math.abs(rem).toLocaleString('it-IT')+' km'}</div>`:''}
+   ${v.note?`<div class="alert ${v.status==='Officina'?'red':''}" style="margin-top:8px"><b>Nota</b><div class="small">${esc(v.note)}</div></div>`:''}
+   <div class="toolbar"><button class="btn light edit-vehicle" data-id="${v.id}">Modifica</button>${v.status==='Disponibile'?`<button class="btn danger problem-vehicle" data-id="${v.id}">Segnala problema</button>`:`<button class="btn primary available-vehicle" data-id="${v.id}">Rendi disponibile</button>`}</div>
+  </div>`;
+ }).join('')||'<div class="small">Nessun mezzo.</div>';
+}
+function renderHistory(){
+ const dates=Object.keys(state.history||{}).sort().reverse();
+ document.getElementById('historySelect').innerHTML=dates.length?dates.map(d=>`<option>${d}</option>`).join(''):'<option value="">Nessuna giornata salvata</option>';
+ if(!dates.length)document.getElementById('historyView').innerHTML='<div class="notice">Premi “Salva giornata” o “Chiudi e crea domani” per creare lo storico.</div>';
+}
+function showHistory(){
+ const d=document.getElementById('historySelect').value,snap=state.history[d];if(!snap)return;
+ const active=snap.routes.filter(r=>r.active);
+ const assignments=code=>snap.drivers.filter(x=>x.route===code&&ACTIVE.includes(x.status));
+ const covered=active.filter(r=>assignments(r.code).length===1).length,open=active.filter(r=>assignments(r.code).length===0).length;
+ document.getElementById('historyView').innerHTML=`<div class="history-card"><h3 style="margin-top:0">${esc(d)}</h3><div class="row"><div><b>${snap.drivers.filter(x=>x.status==='Presente').length}</b><div class="small">Presenti</div></div><div><b>${covered}/${active.length}</b><div class="small">Giri coperti · ${open} scoperti</div></div></div></div>
+ <div class="card history-table" style="margin-top:9px"><table><thead><tr><th>Dipendente</th><th>Stato</th><th>Giro</th><th>Mezzo</th><th>Note</th></tr></thead><tbody>${snap.drivers.map(x=>`<tr><td>${esc(x.name)}</td><td>${esc(x.status)}</td><td>${esc(x.route||'—')}</td><td>${esc(x.vehicle||'—')}</td><td>${esc(x.note||'')}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function render(){renderStats();renderAlerts();renderDrivers();renderRoutes();renderVehicles();renderHistory();save()}
+function fillSelect(el,vals,current,empty){el.innerHTML=option(vals,current,empty)}
+function openDriver(id=null){
+ editDriver=id;const d=id?state.drivers.find(x=>x.id===id):{name:'',status:'Presente',route:'',vehicle:'',phone:'',note:''};
+ document.getElementById('driverTitle').textContent=id?'Modifica dipendente':'Nuovo dipendente';
+ document.getElementById('dName').value=d.name;fillSelect(document.getElementById('dStatus'),STATUS,d.status,false);fillSelect(document.getElementById('dRoute'),state.routes.filter(r=>r.active).map(r=>r.code),d.route,true);fillSelect(document.getElementById('dVehicle'),state.vehicles.map(v=>v.code),d.vehicle,true);document.getElementById('dPhone').value=d.phone||'';document.getElementById('dNote').value=d.note||'';document.getElementById('driverModal').classList.add('show');
+}
+function openVehicle(id=null){
+ editVehicle=id;const v=id?state.vehicles.find(x=>x.id===id):{code:'',plate:'',model:'',status:'Disponibile',km:'',service:'',note:''};
+ document.getElementById('vehicleTitle').textContent=id?'Modifica mezzo':'Nuovo mezzo';document.getElementById('vCode').value=v.code;document.getElementById('vPlate').value=v.plate;document.getElementById('vModel').value=v.model||'';fillSelect(document.getElementById('vStatus'),VSTATUS,v.status,false);document.getElementById('vKm').value=v.km||'';document.getElementById('vService').value=v.service||'';document.getElementById('vNote').value=v.note||'';document.getElementById('vehicleModal').classList.add('show');
+}
+function openRoute(id=null){
+ editRoute=id;const r=id?state.routes.find(x=>x.id===id):{code:'',zone:'',active:true,priority:'Normale',note:''};
+ document.getElementById('routeTitle').textContent=id?'Modifica giro':'Nuovo giro';document.getElementById('rCode').value=r.code;document.getElementById('rZone').value=r.zone||'';document.getElementById('rActive').value=String(r.active);document.getElementById('rPriority').value=r.priority||'Normale';document.getElementById('rNote').value=r.note||'';document.getElementById('routeModal').classList.add('show');
+}
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById(b.dataset.tab).classList.add('active')}));
+document.getElementById('quickAdd').onclick=()=>openDriver();document.getElementById('addDriverBtn').onclick=()=>openDriver();document.getElementById('addVehicleBtn').onclick=()=>openVehicle();document.getElementById('addRouteBtn').onclick=()=>openRoute();document.getElementById('searchDriver').oninput=renderDrivers;
+document.getElementById('workDate').onchange=e=>{state.workDate=e.target.value;render()};
+document.getElementById('saveDayBtn').onclick=()=>{state.history[state.workDate]={drivers:clone(state.drivers),vehicles:clone(state.vehicles),routes:clone(state.routes),savedAt:new Date().toISOString()};render();alert('Giornata salvata nello storico.')};
+document.getElementById('closeDayBtn').onclick=()=>{if(!confirm('Salvare la giornata e creare domani mantenendo le assegnazioni attuali?'))return;state.history[state.workDate]={drivers:clone(state.drivers),vehicles:clone(state.vehicles),routes:clone(state.routes),savedAt:new Date().toISOString()};const d=new Date(state.workDate+'T12:00:00');d.setDate(d.getDate()+1);state.workDate=d.toISOString().slice(0,10);render();alert('Giornata chiusa. Sei già sulla giornata successiva.')};
+document.getElementById('loadHistoryBtn').onclick=showHistory;
+document.body.addEventListener('click',e=>{
+ let t=e.target.closest('[data-close]');if(t)document.getElementById(t.dataset.close).classList.remove('show');if(e.target.classList.contains('modal-bg'))e.target.classList.remove('show');
+ t=e.target.closest('.edit-driver');if(t)openDriver(Number(t.dataset.id));
+ t=e.target.closest('.del-driver');if(t&&confirm('Eliminare il dipendente?')){state.drivers=state.drivers.filter(x=>x.id!==Number(t.dataset.id));render()}
+ t=e.target.closest('.edit-vehicle');if(t)openVehicle(Number(t.dataset.id));
+ t=e.target.closest('.del-route');if(t&&confirm('Eliminare il giro?')){const r=state.routes.find(x=>x.id===Number(t.dataset.id));state.drivers.forEach(d=>{if(d.route===r.code)d.route=''});state.routes=state.routes.filter(x=>x.id!==r.id);render()}
+ t=e.target.closest('.edit-route');if(t)openRoute(Number(t.dataset.id));
+ t=e.target.closest('.problem-vehicle');if(t){const v=state.vehicles.find(x=>x.id===Number(t.dataset.id));const note=prompt('Descrivi il problema del mezzo:');if(note!==null){v.status='Problema';v.note=note;render()}}
+ t=e.target.closest('.available-vehicle');if(t){const v=state.vehicles.find(x=>x.id===Number(t.dataset.id));v.status='Disponibile';v.note='';render()}
+ t=e.target.closest('.assign-route');if(t){const code=t.dataset.code;const driverSel=document.querySelector(`.route-driver[data-route="${CSS.escape(code)}"]`);const vehSel=document.querySelector(`.route-vehicle[data-route="${CSS.escape(code)}"]`);const id=Number(driverSel.value);if(!id){alert('Scegli un autista.');return}const d=state.drivers.find(x=>x.id===id);d.route=code;if(vehSel.value)d.vehicle=vehSel.value;render()}
+});
+document.getElementById('saveDriver').onclick=()=>{const name=document.getElementById('dName').value.trim();if(!name){alert('Inserisci il nome.');return}const obj={id:editDriver||Date.now(),name,status:document.getElementById('dStatus').value,route:document.getElementById('dRoute').value,vehicle:document.getElementById('dVehicle').value,phone:document.getElementById('dPhone').value.trim(),note:document.getElementById('dNote').value.trim()};if(editDriver){const i=state.drivers.findIndex(x=>x.id===editDriver);state.drivers[i]=obj}else state.drivers.push(obj);document.getElementById('driverModal').classList.remove('show');render()};
+document.getElementById('saveVehicle').onclick=()=>{const code=document.getElementById('vCode').value.trim().toUpperCase();if(!code){alert('Inserisci il codice.');return}if(state.vehicles.some(x=>x.code===code&&x.id!==editVehicle)){alert('Codice mezzo già esistente.');return}const obj={id:editVehicle||Date.now(),code,plate:document.getElementById('vPlate').value.trim().toUpperCase(),model:document.getElementById('vModel').value.trim(),status:document.getElementById('vStatus').value,km:Number(document.getElementById('vKm').value||0),service:Number(document.getElementById('vService').value||0),note:document.getElementById('vNote').value.trim()};if(editVehicle){const old=state.vehicles.find(x=>x.id===editVehicle),oldCode=old.code,i=state.vehicles.findIndex(x=>x.id===editVehicle);state.vehicles[i]=obj;if(oldCode!==code)state.drivers.forEach(d=>{if(d.vehicle===oldCode)d.vehicle=code})}else state.vehicles.push(obj);document.getElementById('vehicleModal').classList.remove('show');render()};
+document.getElementById('saveRoute').onclick=()=>{const code=document.getElementById('rCode').value.trim().toUpperCase();if(!code){alert('Inserisci il codice giro.');return}if(state.routes.some(x=>x.code===code&&x.id!==editRoute)){alert('Giro già esistente.');return}const obj={id:editRoute||Date.now(),code,zone:document.getElementById('rZone').value.trim(),active:document.getElementById('rActive').value==='true',priority:document.getElementById('rPriority').value,note:document.getElementById('rNote').value.trim()};if(editRoute){const old=state.routes.find(x=>x.id===editRoute),oldCode=old.code,i=state.routes.findIndex(x=>x.id===editRoute);state.routes[i]=obj;if(oldCode!==code)state.drivers.forEach(d=>{if(d.route===oldCode)d.route=code})}else state.routes.push(obj);document.getElementById('routeModal').classList.remove('show');render()};
+document.getElementById('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='lavagna-logistica-backup.json';a.click();URL.revokeObjectURL(a.href)};
+document.getElementById('importFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!Array.isArray(x.drivers)||!Array.isArray(x.vehicles))throw 0;state=x;if(!state.routes)state=migrate(state);if(!state.history)state.history={};if(!state.workDate)state.workDate=new Date().toISOString().slice(0,10);render();alert('Backup importato.')}catch(err){alert('Backup non valido.')}};r.readAsText(f);e.target.value=''};
+document.getElementById('resetBtn').onclick=()=>{if(confirm('Ripristinare la demo?')){state=clone(demo);render()}};
+render();
 })();
 </script>
 </body>
