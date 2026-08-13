@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#111827">
+<title>Lavagna Logistica</title>
+<style>
+:root{
+  --bg:#f3f4f6;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;
+  --green:#dcfce7;--greenText:#166534;--yellow:#fef3c7;--yellowText:#92400e;
+  --red:#fee2e2;--redText:#991b1b;--blue:#dbeafe;--blueText:#1d4ed8;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+button,input,select{font:inherit}
+.app{max-width:1180px;margin:0 auto;padding:14px 14px 80px}
+.topbar{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin:4px 0 14px}
+h1{font-size:28px;margin:0}.subtitle{color:var(--muted);font-size:14px;margin-top:3px}
+.btn{border:0;border-radius:12px;padding:11px 14px;font-weight:700;cursor:pointer}
+.btn.primary{background:#111827;color:#fff}.btn.light{background:#fff;border:1px solid var(--line);color:#111827}
+.btn.danger{background:#fff;border:1px solid #fecaca;color:#b91c1c}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:12px 0 16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px}
+.stat .n{font-size:28px;font-weight:800;line-height:1}.stat .l{font-size:12px;color:var(--muted);margin-top:5px}
+.tabs{display:flex;gap:8px;overflow:auto;margin-bottom:12px}
+.tab{white-space:nowrap;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 13px;font-weight:700;cursor:pointer}
+.tab.active{background:#111827;color:white;border-color:#111827}
+.panel{display:none}.panel.active{display:block}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.search{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:900px}
+th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-size:12px;color:#4b5563;background:#f9fafb;position:sticky;top:0;z-index:1}
+td input,td select,.field{width:100%;padding:9px 10px;border:1px solid #d1d5db;border-radius:10px;background:#fff}
+.badge{display:inline-block;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:800}
+.ok{background:var(--green);color:var(--greenText)}.warn{background:var(--yellow);color:var(--yellowText)}
+.bad{background:var(--red);color:var(--redText)}.info{background:var(--blue);color:var(--blueText)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.vehicle{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px}
+.vehicle h3{margin:0 0 4px;font-size:18px}.small{font-size:12px;color:var(--muted)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0 8px}
+.section-title h2{margin:0;font-size:20px}
+.alerts{display:grid;gap:8px}
+.alert-card{background:#fff;border:1px solid var(--line);border-left:5px solid #f59e0b;border-radius:12px;padding:12px}
+.alert-card.red{border-left-color:#ef4444}.alert-card.green{border-left-color:#22c55e}
+.modal-bg{position:fixed;inset:0;background:rgba(17,24,39,.42);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.modal-bg.show{display:flex}.modal{width:100%;max-width:620px;background:white;border-radius:20px 20px 0 0;padding:18px;max-height:88vh;overflow:auto}
+.modal h3{margin:0 0 12px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.form-grid .full{grid-column:1/-1}
+.label{font-size:12px;color:#4b5563;margin:0 0 4px}.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.note{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe;border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:12px}
+.footer-note{font-size:12px;color:var(--muted);margin-top:10px}
+@media(max-width:800px){
+  .app{padding:12px 10px 70px}.topbar{align-items:center}h1{font-size:24px}
+  .stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}
+  .row{grid-template-columns:1fr}.desktop-hide{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div>
+      <h1>Lavagna Logistica</h1>
+      <div class="subtitle">Dipendenti · giri · mezzi · anomalie</div>
+    </div>
+    <button class="btn primary" id="quickAdd">+ Aggiungi</button>
+  </div>
+
+  <div class="note">Questa versione salva i dati sul dispositivo quando il browser lo consente. Puoi anche esportare un backup JSON.</div>
+
+  <div class="stats">
+    <div class="stat"><div class="n" id="sPresenti">0</div><div class="l">Presenti</div></div>
+    <div class="stat"><div class="n" id="sAssenti">0</div><div class="l">Assenti</div></div>
+    <div class="stat"><div class="n" id="sJolly">0</div><div class="l">Jolly</div></div>
+    <div class="stat"><div class="n" id="sMezzi">0</div><div class="l">Mezzi disponibili</div></div>
+    <div class="stat"><div class="n" id="sAlert">0</div><div class="l">Alert aperti</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="lavagna">Lavagna</button>
+    <button class="tab" data-tab="mezzi">Mezzi</button>
+    <button class="tab" data-tab="alert">Alert</button>
+    <button class="tab" data-tab="backup">Backup</button>
+  </div>
+
+  <section class="panel active" id="lavagna">
+    <div class="toolbar">
+      <input class="search" id="searchDriver" placeholder="Cerca dipendente, giro o mezzo…">
+      <button class="btn light" id="addDriverBtn">+ Dipendente</button>
+    </div>
+    <div class="card table-wrap">
+      <table>
+        <thead><tr>
+          <th>Dipendente</th><th>Stato</th><th>Giro</th><th>Mezzo</th><th>Note</th><th>Alert</th><th></th>
+        </tr></thead>
+        <tbody id="driversBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel" id="mezzi">
+    <div class="section-title"><h2>Flotta</h2><button class="btn light" id="addVehicleBtn">+ Mezzo</button></div>
+    <div class="grid" id="vehiclesGrid"></div>
+  </section>
+
+  <section class="panel" id="alert">
+    <div class="section-title"><h2>Problemi da risolvere</h2></div>
+    <div class="alerts" id="alertsList"></div>
+  </section>
+
+  <section class="panel" id="backup">
+    <div class="card" style="padding:14px">
+      <h2 style="margin-top:0">Backup dati</h2>
+      <p class="small">Esporta un file con tutti i dipendenti e i mezzi. Puoi reimportarlo in questa app.</p>
+      <div class="toolbar">
+        <button class="btn primary" id="exportBtn">Esporta backup</button>
+        <label class="btn light" style="display:inline-block;cursor:pointer">
+          Importa backup
+          <input type="file" id="importFile" accept=".json,application/json" style="display:none">
+        </label>
+        <button class="btn danger" id="resetBtn">Ripristina demo</button>
+      </div>
+      <div class="footer-note" id="storageInfo"></div>
+    </div>
+  </section>
+</div>
+
+<div class="modal-bg" id="driverModal">
+  <div class="modal">
+    <h3 id="driverModalTitle">Nuovo dipendente</h3>
+    <div class="form-grid">
+      <div class="full"><div class="label">Nome</div><input class="field" id="dName"></div>
+      <div><div class="label">Stato</div><select class="field" id="dStatus"></select></div>
+      <div><div class="label">Giro</div><input class="field" id="dRoute" placeholder="es. G12"></div>
+      <div><div class="label">Mezzo</div><select class="field" id="dVehicle"></select></div>
+      <div><div class="label">Telefono</div><input class="field" id="dPhone" placeholder="facoltativo"></div>
+      <div class="full"><div class="label">Note</div><input class="field" id="dNote"></div>
+    </div>
+    <div class="actions">
+      <button class="btn light" data-close="driverModal">Annulla</button>
+      <button class="btn primary" id="saveDriver">Salva</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="vehicleModal">
+  <div class="modal">
+    <h3 id="vehicleModalTitle">Nuovo mezzo</h3>
+    <div class="form-grid">
+      <div><div class="label">Codice mezzo</div><input class="field" id="vCode" placeholder="es. F18"></div>
+      <div><div class="label">Targa</div><input class="field" id="vPlate"></div>
+      <div><div class="label">Modello</div><input class="field" id="vModel"></div>
+      <div><div class="label">Stato</div><select class="field" id="vStatus"></select></div>
+      <div><div class="label">Km</div><input class="field" id="vKm" type="number" min="0"></div>
+      <div><div class="label">Tagliando a km</div><input class="field" id="vService" type="number" min="0"></div>
+      <div class="full"><div class="label">Note</div><input class="field" id="vNote"></div>
+    </div>
+    <div class="actions">
+      <button class="btn light" data-close="vehicleModal">Annulla</button>
+      <button class="btn primary" id="saveVehicle">Salva</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  const STATUS = ['Presente','Jolly','Ferie','Malattia','Riposo'];
+  const VEH_STATUS = ['Disponibile','Problema','Officina'];
+
+  const demo = {
+    drivers:[
+      {id:1,name:'Alessandro',status:'Presente',route:'G25',vehicle:'F03',phone:'',note:''},
+      {id:2,name:'Marco',status:'Malattia',route:'G12',vehicle:'',phone:'',note:''},
+      {id:3,name:'Luca',status:'Presente',route:'G31',vehicle:'F07',phone:'',note:'Affiancamento'},
+      {id:4,name:'Andrea',status:'Jolly',route:'',vehicle:'F09',phone:'',note:'Disponibile'}
+    ],
+    vehicles:[
+      {id:101,code:'F03',plate:'CR 123XX',model:'Ducato',status:'Disponibile',km:85430,service:90000,note:''},
+      {id:102,code:'F07',plate:'CR 456XX',model:'Ducato',status:'Problema',km:112200,service:115000,note:'Spia motore'},
+      {id:103,code:'F09',plate:'CR 789XX',model:'Transit',status:'Disponibile',km:66210,service:70000,note:''},
+      {id:104,code:'F12',plate:'CR 321YY',model:'Sprinter',status:'Officina',km:149100,service:150000,note:'Freni'}
+    ]
+  };
+
+  let state = loadState();
+  let editingDriver = null;
+  let editingVehicle = null;
+
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+  function loadState(){
+    try{
+      const raw = localStorage.getItem('lavagna_logistica_v1');
+      return raw ? JSON.parse(raw) : clone(demo);
+    }catch(e){ return clone(demo); }
+  }
+  function saveState(){
+    try{
+      localStorage.setItem('lavagna_logistica_v1', JSON.stringify(state));
+      document.getElementById('storageInfo').textContent='Salvataggio locale attivo.';
+    }catch(e){
+      document.getElementById('storageInfo').textContent='Salvataggio locale non disponibile in questa modalità. Usa Esporta backup.';
+    }
+  }
+  function esc(s){
+    return String(s ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  }
+  function driverAlert(d){
+    if(['Malattia','Ferie','Riposo'].includes(d.status) && d.route) return {text:'Giro assegnato a un assente',level:'bad'};
+    if(d.status==='Presente' && !d.route) return {text:'Presente senza giro',level:'warn'};
+    if(d.status==='Jolly' && d.route) return {text:'Jolly già assegnato',level:'warn'};
+    if(d.vehicle){
+      const v = state.vehicles.find(v=>v.code===d.vehicle);
+      if(!v) return {text:'Mezzo non trovato',level:'bad'};
+      if(v.status!=='Disponibile') return {text:d.vehicle+' · '+v.status,level:'bad'};
+      const others = state.drivers.filter(x=>x.id!==d.id && x.vehicle===d.vehicle && ['Presente','Jolly'].includes(x.status));
+      if(others.length) return {text:'Mezzo assegnato a 2 persone',level:'bad'};
+    }
+    if(d.route && ['Presente','Jolly'].includes(d.status)){
+      const same = state.drivers.filter(x=>x.id!==d.id && x.route===d.route && ['Presente','Jolly'].includes(x.status));
+      if(same.length) return {text:'Giro assegnato a 2 persone',level:'bad'};
+    }
+    return {text:'OK',level:'ok'};
+  }
+  function allAlerts(){
+    const list=[];
+    state.drivers.forEach(d=>{
+      const a=driverAlert(d);
+      if(a.level!=='ok') list.push({title:d.name,detail:a.text,level:a.level});
+    });
+    state.vehicles.forEach(v=>{
+      if(v.status!=='Disponibile') list.push({title:v.code+' · '+v.plate,detail:v.status+(v.note?' · '+v.note:''),level:v.status==='Officina'?'bad':'warn'});
+      if(v.service && v.km && v.service-v.km<=1000 && v.service-v.km>=0) list.push({title:v.code+' · tagliando',detail:'Mancano '+(v.service-v.km)+' km',level:'warn'});
+      if(v.service && v.km && v.km>v.service) list.push({title:v.code+' · tagliando',detail:'Superato di '+(v.km-v.service)+' km',level:'bad'});
+    });
+    return list;
+  }
+  function renderStats(){
+    const presenti=state.drivers.filter(d=>d.status==='Presente').length;
+    const assenti=state.drivers.filter(d=>['Malattia','Ferie','Riposo'].includes(d.status)).length;
+    const jolly=state.drivers.filter(d=>d.status==='Jolly').length;
+    const disp=state.vehicles.filter(v=>v.status==='Disponibile').length;
+    document.getElementById('sPresenti').textContent=presenti;
+    document.getElementById('sAssenti').textContent=assenti;
+    document.getElementById('sJolly').textContent=jolly;
+    document.getElementById('sMezzi').textContent=disp;
+    document.getElementById('sAlert').textContent=allAlerts().length;
+  }
+  function renderDrivers(){
+    const q=document.getElementById('searchDriver').value.trim().toLowerCase();
+    const rows=state.drivers.filter(d=>[d.name,d.status,d.route,d.vehicle,d.note].join(' ').toLowerCase().includes(q));
+    const tbody=document.getElementById('driversBody');
+    tbody.innerHTML=rows.map(d=>{
+      const a=driverAlert(d);
+      return `<tr>
+        <td><b>${esc(d.name)}</b></td>
+        <td><span class="badge ${d.status==='Presente'?'ok':d.status==='Jolly'?'warn':'info'}">${esc(d.status)}</span></td>
+        <td>${esc(d.route||'—')}</td>
+        <td>${esc(d.vehicle||'—')}</td>
+        <td>${esc(d.note||'')}</td>
+        <td><span class="badge ${a.level}">${esc(a.text)}</span></td>
+        <td style="white-space:nowrap">
+          <button class="btn light edit-driver" data-id="${d.id}">Modifica</button>
+          <button class="btn danger del-driver" data-id="${d.id}">×</button>
+        </td>
+      </tr>`;
+    }).join('') || `<tr><td colspan="7" class="small">Nessun risultato.</td></tr>`;
+  }
+  function renderVehicles(){
+    document.getElementById('vehiclesGrid').innerHTML=state.vehicles.map(v=>{
+      const cls=v.status==='Disponibile'?'ok':v.status==='Problema'?'warn':'bad';
+      const remain=(v.service&&v.km)?v.service-v.km:null;
+      return `<div class="vehicle">
+        <div style="display:flex;justify-content:space-between;gap:8px">
+          <div><h3>${esc(v.code)}</h3><div class="small">${esc(v.plate)} · ${esc(v.model||'')}</div></div>
+          <span class="badge ${cls}">${esc(v.status)}</span>
+        </div>
+        <div class="row">
+          <div><div class="small">Km</div><b>${Number(v.km||0).toLocaleString('it-IT')}</b></div>
+          <div><div class="small">Prossimo tagliando</div><b>${v.service?Number(v.service).toLocaleString('it-IT'):'—'}</b></div>
+        </div>
+        ${remain!==null?`<div class="small" style="margin-top:8px">${remain>=0?'Mancano '+remain.toLocaleString('it-IT')+' km':'Tagliando superato di '+Math.abs(remain).toLocaleString('it-IT')+' km'}</div>`:''}
+        ${v.note?`<div class="small" style="margin-top:8px">${esc(v.note)}</div>`:''}
+        <div class="toolbar" style="margin-bottom:0">
+          <button class="btn light edit-vehicle" data-id="${v.id}">Modifica</button>
+          <button class="btn danger del-vehicle" data-id="${v.id}">Elimina</button>
+        </div>
+      </div>`;
+    }).join('') || `<div class="small">Nessun mezzo inserito.</div>`;
+  }
+  function renderAlerts(){
+    const a=allAlerts();
+    document.getElementById('alertsList').innerHTML=a.map(x=>`<div class="alert-card ${x.level==='bad'?'red':''}">
+      <b>${esc(x.title)}</b><div class="small" style="margin-top:3px">${esc(x.detail)}</div>
+    </div>`).join('') || `<div class="alert-card green"><b>Nessun problema aperto</b><div class="small">Tutto regolare.</div></div>`;
+  }
+  function render(){
+    renderStats(); renderDrivers(); renderVehicles(); renderAlerts(); saveState();
+  }
+  function fillSelect(el,values,current,empty=false){
+    el.innerHTML=(empty?'<option value="">— Nessuno —</option>':'')+values.map(v=>`<option ${v===current?'selected':''}>${esc(v)}</option>`).join('');
+  }
+  function openDriver(id=null){
+    editingDriver=id;
+    const d=id?state.drivers.find(x=>x.id===id):{name:'',status:'Presente',route:'',vehicle:'',phone:'',note:''};
+    document.getElementById('driverModalTitle').textContent=id?'Modifica dipendente':'Nuovo dipendente';
+    document.getElementById('dName').value=d.name;
+    fillSelect(document.getElementById('dStatus'),STATUS,d.status);
+    document.getElementById('dRoute').value=d.route||'';
+    fillSelect(document.getElementById('dVehicle'),state.vehicles.map(v=>v.code),d.vehicle,true);
+    document.getElementById('dPhone').value=d.phone||'';
+    document.getElementById('dNote').value=d.note||'';
+    document.getElementById('driverModal').classList.add('show');
+  }
+  function openVehicle(id=null){
+    editingVehicle=id;
+    const v=id?state.vehicles.find(x=>x.id===id):{code:'',plate:'',model:'',status:'Disponibile',km:'',service:'',note:''};
+    document.getElementById('vehicleModalTitle').textContent=id?'Modifica mezzo':'Nuovo mezzo';
+    document.getElementById('vCode').value=v.code;
+    document.getElementById('vPlate').value=v.plate;
+    document.getElementById('vModel').value=v.model||'';
+    fillSelect(document.getElementById('vStatus'),VEH_STATUS,v.status);
+    document.getElementById('vKm').value=v.km||'';
+    document.getElementById('vService').value=v.service||'';
+    document.getElementById('vNote').value=v.note||'';
+    document.getElementById('vehicleModal').classList.add('show');
+  }
+
+  document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active'); document.getElementById(btn.dataset.tab).classList.add('active');
+  }));
+  document.getElementById('quickAdd').addEventListener('click',()=>openDriver());
+  document.getElementById('addDriverBtn').addEventListener('click',()=>openDriver());
+  document.getElementById('addVehicleBtn').addEventListener('click',()=>openVehicle());
+  document.getElementById('searchDriver').addEventListener('input',renderDrivers);
+
+  document.body.addEventListener('click',e=>{
+    const ed=e.target.closest('.edit-driver'); if(ed) openDriver(Number(ed.dataset.id));
+    const dd=e.target.closest('.del-driver'); if(dd && confirm('Eliminare questo dipendente?')){state.drivers=state.drivers.filter(x=>x.id!==Number(dd.dataset.id));render();}
+    const ev=e.target.closest('.edit-vehicle'); if(ev) openVehicle(Number(ev.dataset.id));
+    const dv=e.target.closest('.del-vehicle'); if(dv && confirm('Eliminare questo mezzo?')){state.vehicles=state.vehicles.filter(x=>x.id!==Number(dv.dataset.id));render();}
+    const cl=e.target.closest('[data-close]'); if(cl) document.getElementById(cl.dataset.close).classList.remove('show');
+    if(e.target.classList.contains('modal-bg')) e.target.classList.remove('show');
+  });
+
+  document.getElementById('saveDriver').addEventListener('click',()=>{
+    const name=document.getElementById('dName').value.trim();
+    if(!name){alert('Inserisci il nome.');return;}
+    const obj={
+      id:editingDriver || Date.now(),
+      name, status:document.getElementById('dStatus').value,
+      route:document.getElementById('dRoute').value.trim().toUpperCase(),
+      vehicle:document.getElementById('dVehicle').value,
+      phone:document.getElementById('dPhone').value.trim(),
+      note:document.getElementById('dNote').value.trim()
+    };
+    if(editingDriver){const i=state.drivers.findIndex(x=>x.id===editingDriver);state.drivers[i]=obj;} else state.drivers.push(obj);
+    document.getElementById('driverModal').classList.remove('show'); render();
+  });
+
+  document.getElementById('saveVehicle').addEventListener('click',()=>{
+    const code=document.getElementById('vCode').value.trim().toUpperCase();
+    if(!code){alert('Inserisci il codice mezzo.');return;}
+    const duplicate=state.vehicles.find(x=>x.code===code && x.id!==editingVehicle);
+    if(duplicate){alert('Esiste già un mezzo con questo codice.');return;}
+    const obj={
+      id:editingVehicle || Date.now(),
+      code,plate:document.getElementById('vPlate').value.trim().toUpperCase(),
+      model:document.getElementById('vModel').value.trim(),
+      status:document.getElementById('vStatus').value,
+      km:Number(document.getElementById('vKm').value||0),
+      service:Number(document.getElementById('vService').value||0),
+      note:document.getElementById('vNote').value.trim()
+    };
+    if(editingVehicle){
+      const old=state.vehicles.find(x=>x.id===editingVehicle);
+      const oldCode=old.code;
+      const i=state.vehicles.findIndex(x=>x.id===editingVehicle); state.vehicles[i]=obj;
+      if(oldCode!==code) state.drivers.forEach(d=>{if(d.vehicle===oldCode)d.vehicle=code;});
+    } else state.vehicles.push(obj);
+    document.getElementById('vehicleModal').classList.remove('show'); render();
+  });
+
+  document.getElementById('exportBtn').addEventListener('click',()=>{
+    const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='lavagna-logistica-backup.json';a.click();URL.revokeObjectURL(a.href);
+  });
+  document.getElementById('importFile').addEventListener('change',e=>{
+    const f=e.target.files[0]; if(!f)return;
+    const r=new FileReader(); r.onload=()=>{
+      try{
+        const data=JSON.parse(r.result);
+        if(!Array.isArray(data.drivers)||!Array.isArray(data.vehicles)) throw new Error();
+        state=data;render();alert('Backup importato.');
+      }catch(err){alert('File di backup non valido.');}
+    }; r.readAsText(f); e.target.value='';
+  });
+  document.getElementById('resetBtn').addEventListener('click',()=>{
+    if(confirm('Ripristinare i dati demo?')){state=clone(demo);render();}
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
