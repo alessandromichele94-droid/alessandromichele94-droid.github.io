@@ -85,11 +85,12 @@ td select{width:100%;padding:10px;border:1px solid #cfcfca;border-radius:10px;ba
 .notice{background:#fff7d0;border:1px solid #efd671;border-radius:12px;padding:10px 12px;font-size:13px;margin:9px 0}
 .history-card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px}
 .absent-tab-count{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;margin-left:4px;border-radius:999px;background:var(--red);color:#fff;font-size:11px;font-weight:900}
-.absent-page{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.absent-page{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .absent-column{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
 .absent-column .head{display:flex;justify-content:space-between;align-items:center;padding:14px 15px;font-weight:900;font-size:18px}
 .absent-column.ferie .head{background:#fff3bd;border-bottom:3px solid var(--yellow)}
 .absent-column.malattia .head{background:#fde7e8;border-bottom:3px solid var(--red)}
+.absent-column.riposo .head{background:#f1f1ef;border-bottom:3px solid var(--black)}
 .absent-big-count{display:grid;place-items:center;min-width:32px;height:32px;padding:0 8px;border-radius:999px;background:#fff;font-size:14px;font-weight:900}
 .absent-list{padding:8px 12px 12px}
 .absent-person{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--line)}
@@ -154,7 +155,7 @@ td select{width:100%;padding:10px;border:1px solid #cfcfca;border-radius:10px;ba
 
 
   <section class="panel" id="assenti">
-    <div class="notice"><b>Assenti oggi</b><br>Qui trovi subito chi è in ferie o in malattia.</div>
+    <div class="notice"><b>Assenti oggi</b><br>Qui trovi subito chi è in ferie, in malattia o a riposo.</div>
     <div class="absent-page">
       <div class="absent-column ferie">
         <div class="head"><span>🏖️ Ferie</span><span id="ferieCount" class="absent-big-count">0</span></div>
@@ -163,6 +164,10 @@ td select{width:100%;padding:10px;border:1px solid #cfcfca;border-radius:10px;ba
       <div class="absent-column malattia">
         <div class="head"><span>🤒 Malattia</span><span id="malattiaCount" class="absent-big-count">0</span></div>
         <div id="malattiaList" class="absent-list"></div>
+      </div>
+      <div class="absent-column riposo">
+        <div class="head"><span>😴 Riposo</span><span id="riposoCount" class="absent-big-count">0</span></div>
+        <div id="riposoList" class="absent-list"></div>
       </div>
     </div>
   </section>
@@ -313,80 +318,36 @@ function vehicleOptions(current,id){
 function renderAbsences(){
   const ferie=state.drivers.filter(d=>d.status==='Ferie');
   const malattia=state.drivers.filter(d=>d.status==='Malattia');
-  const totale=ferie.length+malattia.length;
+  const riposo=state.drivers.filter(d=>d.status==='Riposo');
+  const totale=ferie.length+malattia.length+riposo.length;
 
   const tabCount=document.getElementById('absentTabCount');
   const ferieCount=document.getElementById('ferieCount');
   const malattiaCount=document.getElementById('malattiaCount');
+  const riposoCount=document.getElementById('riposoCount');
+
   if(tabCount) tabCount.textContent=totale;
   if(ferieCount) ferieCount.textContent=ferie.length;
   if(malattiaCount) malattiaCount.textContent=malattia.length;
+  if(riposoCount) riposoCount.textContent=riposo.length;
 
   const renderList=list=>list.length
     ? list.map(d=>`<div class="absent-person">
-        <div><div class="absent-person-name">${esc(d.name)}</div><div class="small">${esc(d.note||'')}</div></div>
+        <div>
+          <div class="absent-person-name">${esc(d.name)}</div>
+          <div class="small">${esc(d.note||'')}</div>
+        </div>
         <button class="btn light return-driver" data-id="${d.id}">Rientra</button>
       </div>`).join('')
     : '<div class="absent-empty">Nessuno</div>';
 
   const ferieList=document.getElementById('ferieList');
   const malattiaList=document.getElementById('malattiaList');
+  const riposoList=document.getElementById('riposoList');
+
   if(ferieList) ferieList.innerHTML=renderList(ferie);
   if(malattiaList) malattiaList.innerHTML=renderList(malattia);
-}
-
-
-function focusTitle(key){
-  return {
-    available:'Dipendenti disponibili',
-    openRoutes:'Giri scoperti',
-    jolly:'Jolly liberi',
-    koVehicles:'Mezzi KO'
-  }[key]||'Dettaglio';
-}
-function focusItems(key){
-  if(key==='available'){
-    return state.drivers
-      .filter(d=>d.status==='Disponibile')
-      .map(d=>({left:d.name,right:d.route?('Giro '+d.route):'Senza giro'}));
-  }
-  if(key==='openRoutes'){
-    return uncovered().map(r=>({left:'Giro '+r.code,right:r.zone||'Scoperto'}));
-  }
-  if(key==='jolly'){
-    return state.drivers
-      .filter(d=>d.status==='Jolly'&&!d.route)
-      .map(d=>({left:d.name,right:d.vehicle||'Nessun mezzo'}));
-  }
-  if(key==='koVehicles'){
-    return state.vehicles
-      .filter(v=>v.status!=='Disponibile')
-      .map(v=>({left:v.code+' · '+(v.status||''),right:v.note||v.plate||''}));
-  }
-  return [];
-}
-function renderQuickFocus(){
-  const panel=document.getElementById('quickFocusPanel');
-  document.querySelectorAll('.sum[data-focus]').forEach(el=>el.classList.toggle('active',el.dataset.focus===uiFocus));
-  if(!uiFocus){panel.style.display='none';panel.innerHTML='';return;}
-  const items=focusItems(uiFocus);
-  panel.style.display='block';
-  const extraBtn = uiFocus==='koVehicles'
-    ? '<button class="link-btn" id="openVehiclesTabBtn">Apri sezione Mezzi</button>'
-    : uiFocus==='openRoutes'
-    ? '<button class="link-btn" id="scrollDriversBtn">Vai alla lavagna</button>'
-    : '';
-  panel.innerHTML = `
-    <div class="quick-head">
-      <b>${focusTitle(uiFocus)}</b>
-      <div style="display:flex;gap:12px;align-items:center">
-        ${extraBtn}
-        <button class="link-btn" id="clearQuickFocus">Chiudi</button>
-      </div>
-    </div>
-    <div class="quick-list">
-      ${items.length ? items.map(x=>`<div class="quick-item"><span>${esc(x.left)}</span><span class="small">${esc(x.right)}</span></div>`).join('') : '<div class="quick-empty">Nessun elemento da mostrare.</div>'}
-    </div>`;
+  if(riposoList) riposoList.innerHTML=renderList(riposo);
 }
 
 function summary(){
