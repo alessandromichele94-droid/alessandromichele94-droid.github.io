@@ -25,7 +25,7 @@ button,input,select{font:inherit}
 .datebar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-left:5px solid var(--yellow);border-radius:14px;padding:10px;margin:10px 0}
 .datebar input{border:1px solid #d1d1cc;border-radius:9px;padding:9px 10px;background:#fff}
 .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:10px 0}
-.sum{background:#fff;border:1px solid var(--line);border-top:4px solid var(--yellow);border-radius:14px;padding:13px}
+.sum{background:#fff;border:1px solid var(--line);border-top:4px solid var(--yellow);border-radius:14px;padding:13px;cursor:pointer;transition:.15s ease}.sum:hover{transform:translateY(-1px)}.sum.active{box-shadow:0 0 0 3px rgba(212,5,17,.12)}
 .sum.red{border-top-color:var(--red)}.sum b{display:block;font-size:26px}.sum span{font-size:12px;color:var(--muted);font-weight:650}
 .day-ok,.day-problem{border-radius:13px;padding:11px 12px;margin:9px 0;font-weight:850}
 .absence-overview{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:9px 0 12px}
@@ -40,6 +40,14 @@ button,input,select{font:inherit}
 .person-chip{background:#f4f4f1;border:1px solid #e1e1dc;border-radius:999px;padding:6px 9px;font-size:12px;font-weight:750}
 .no-absence{font-size:12px;color:var(--muted)}
 .day-ok{background:var(--green);color:var(--greenT);border:1px solid #cfe9d3}.day-problem{background:#fff3d0;color:#5c4800;border:1px solid #efd671}
+.quick-panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px;margin:8px 0 12px}
+.quick-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.quick-head b{font-size:17px}
+.quick-list{display:grid;gap:7px}
+.quick-item{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fafaf8;border:1px solid #ecece8;border-radius:11px;padding:10px}
+.quick-empty{font-size:13px;color:var(--muted)}
+.link-btn{background:none;border:0;color:var(--red);font-weight:850;padding:0;cursor:pointer}
+
 .tabs{display:flex;gap:7px;overflow:auto;padding:3px 0 8px}
 .tab{white-space:nowrap;border:1px solid #d9d9d4;background:#fff;border-radius:999px;padding:9px 14px;font-weight:850}
 .tab.active{background:var(--yellow);box-shadow:inset 0 -3px 0 var(--red)}
@@ -113,13 +121,14 @@ td select{width:100%;padding:10px;border:1px solid #cfcfca;border-radius:10px;ba
   </div>
 
   <div class="summary">
-    <div class="sum"><b id="availableDrivers">0</b><span>Dipendenti disponibili</span></div>
-    <div class="sum red"><b id="openRoutes">0</b><span>Giri scoperti</span></div>
-    <div class="sum"><b id="freeJolly">0</b><span>Jolly liberi</span></div>
-    <div class="sum red"><b id="koVehicles">0</b><span>Mezzi KO</span></div>
+    <div class="sum" data-focus="available"><b id="availableDrivers">0</b><span>Dipendenti disponibili</span></div>
+    <div class="sum red" data-focus="openRoutes"><b id="openRoutes">0</b><span>Giri scoperti</span></div>
+    <div class="sum" data-focus="jolly"><b id="freeJolly">0</b><span>Jolly liberi</span></div>
+    <div class="sum red" data-focus="koVehicles"><b id="koVehicles">0</b><span>Mezzi KO</span></div>
   </div>
 
   <div id="dayBanner"></div>
+  <div id="quickFocusPanel" class="quick-panel" style="display:none"></div>
 
   <div class="tabs">
     <button class="tab active" data-tab="oggi">Oggi</button>
@@ -236,7 +245,7 @@ const demo={
   history:{}
 };
 
-let state=load(),editingDriver=null,editingVehicle=null;
+let state=load(),editingDriver=null,editingVehicle=null,uiFocus='';
 
 function clone(x){return JSON.parse(JSON.stringify(x))}
 function normalize(s){
@@ -324,6 +333,60 @@ function renderAbsences(){
   const malattiaList=document.getElementById('malattiaList');
   if(ferieList) ferieList.innerHTML=renderList(ferie);
   if(malattiaList) malattiaList.innerHTML=renderList(malattia);
+}
+
+
+function focusTitle(key){
+  return {
+    available:'Dipendenti disponibili',
+    openRoutes:'Giri scoperti',
+    jolly:'Jolly liberi',
+    koVehicles:'Mezzi KO'
+  }[key]||'Dettaglio';
+}
+function focusItems(key){
+  if(key==='available'){
+    return state.drivers
+      .filter(d=>d.status==='Disponibile')
+      .map(d=>({left:d.name,right:d.route?('Giro '+d.route):'Senza giro'}));
+  }
+  if(key==='openRoutes'){
+    return uncovered().map(r=>({left:'Giro '+r.code,right:r.zone||'Scoperto'}));
+  }
+  if(key==='jolly'){
+    return state.drivers
+      .filter(d=>d.status==='Jolly'&&!d.route)
+      .map(d=>({left:d.name,right:d.vehicle||'Nessun mezzo'}));
+  }
+  if(key==='koVehicles'){
+    return state.vehicles
+      .filter(v=>v.status!=='Disponibile')
+      .map(v=>({left:v.code+' · '+(v.status||''),right:v.note||v.plate||''}));
+  }
+  return [];
+}
+function renderQuickFocus(){
+  const panel=document.getElementById('quickFocusPanel');
+  document.querySelectorAll('.sum[data-focus]').forEach(el=>el.classList.toggle('active',el.dataset.focus===uiFocus));
+  if(!uiFocus){panel.style.display='none';panel.innerHTML='';return;}
+  const items=focusItems(uiFocus);
+  panel.style.display='block';
+  const extraBtn = uiFocus==='koVehicles'
+    ? '<button class="link-btn" id="openVehiclesTabBtn">Apri sezione Mezzi</button>'
+    : uiFocus==='openRoutes'
+    ? '<button class="link-btn" id="scrollDriversBtn">Vai alla lavagna</button>'
+    : '';
+  panel.innerHTML = `
+    <div class="quick-head">
+      <b>${focusTitle(uiFocus)}</b>
+      <div style="display:flex;gap:12px;align-items:center">
+        ${extraBtn}
+        <button class="link-btn" id="clearQuickFocus">Chiudi</button>
+      </div>
+    </div>
+    <div class="quick-list">
+      ${items.length ? items.map(x=>`<div class="quick-item"><span>${esc(x.left)}</span><span class="small">${esc(x.right)}</span></div>`).join('') : '<div class="quick-empty">Nessun elemento da mostrare.</div>'}
+    </div>`;
 }
 
 function summary(){
@@ -425,7 +488,7 @@ function renderHistorySelect(){
   const dates=Object.keys(state.history||{}).sort().reverse();
   document.getElementById('historySelect').innerHTML=dates.length?dates.map(d=>`<option>${d}</option>`).join(''):'<option value="">Nessuno storico</option>';
 }
-function render(){summary();renderAbsences();renderDrivers();renderVehicles();renderHistorySelect();save()}
+function render(){summary();renderQuickFocus();renderAbsences();renderDrivers();renderVehicles();renderHistorySelect();save()}
 
 function openDriver(id=null){
   editingDriver=id;
@@ -544,12 +607,22 @@ document.getElementById('importFile').onchange=e=>{
 };
 
 document.body.addEventListener('click',e=>{
+  let s=e.target.closest('.sum[data-focus]');
+  if(s){
+    uiFocus = uiFocus===s.dataset.focus ? '' : s.dataset.focus;
+    renderQuickFocus();
+    return;
+  }
+
   let t=e.target.closest('[data-close]');if(t)document.getElementById(t.dataset.close).classList.remove('show');
   if(e.target.classList.contains('modal-bg'))e.target.classList.remove('show');
 
   t=e.target.closest('.edit-driver');if(t)openDriver(Number(t.dataset.id));
   t=e.target.closest('.edit-vehicle');if(t)openVehicle(Number(t.dataset.id));
   t=e.target.closest('.return-driver');if(t){const d=state.drivers.find(x=>x.id===Number(t.dataset.id));if(d){d.status='Disponibile';render();}}
+  t=e.target.closest('#clearQuickFocus');if(t){uiFocus='';renderQuickFocus();}
+  t=e.target.closest('#openVehiclesTabBtn');if(t){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));document.querySelector('.tab[data-tab="mezzi"]').classList.add('active');document.getElementById('mezzi').classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+  t=e.target.closest('#scrollDriversBtn');if(t){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));document.querySelector('.tab[data-tab="oggi"]').classList.add('active');document.getElementById('oggi').classList.add('active');document.getElementById('searchDriver').scrollIntoView({behavior:'smooth',block:'start'});}
 
   t=e.target.closest('.problem-vehicle');if(t){
     const v=state.vehicles.find(x=>x.id===Number(t.dataset.id));
